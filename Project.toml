@@ -1,3 +1,7 @@
 name = "AstroUtils"
 uuid = "ec0e6c7f-d08d-4050-b6cf-a4db4caf8aa6"
 version = "0.1.0"
+
+[deps]
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Optim = "429524aa-4258-5aef-a3af-852621145aeb"
