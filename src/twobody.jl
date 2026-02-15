@@ -1,0 +1,127 @@
+using LinearAlgebra
+
+function twobody(μ, tau, ri, vi)
+    tolerance = 1e-12
+
+    u = 0
+    imax = 20
+    umax = typemax(Float64)
+    umin = typemin(Float64)
+    uold = umax
+    dtold = umax
+
+    orbits = 0
+    tdesired = tau
+    threshold = tolerance * abs(tdesired)
+
+    r0 = norm(ri)
+    n0 = dot(ri, vi)
+    beta = 2.0 * (μ / r0) - dot(vi, vi)
+
+    if beta != 0
+        umax = 1.0 / sqrt(abs(beta))
+        umin = -1.0 / sqrt(abs(beta))
+    end
+
+    if beta > 0
+        orbits = beta * tau - 2 * n0
+        orbits = 1 + (orbits * sqrt(beta)) / (π * μ)
+        orbits = floor(orbits / 2)
+    end
+
+    u1 = 0
+    u2 = 0
+    r1 = 0
+    rf = 0
+
+    for i in 1:imax
+        q = beta*u*u
+        q = q / (1 + q)
+        n = 0
+        r = 1
+        l = 1
+        s = 1
+        d = 3
+        gcf = 1
+        k = -5
+        gold = 0
+
+        while gcf != gold
+            k = -k
+            l = l + 2
+            d = d + 4 * l
+            n = n + (1 + k) * l
+            r = d / (d - n * r * q)
+            s = (r - 1) * s
+            gold = gcf
+            gcf  = gold + s
+        end
+
+        h0 = 1 - 2 * q
+        h1 = 2 * u * (1 - q)
+        u0 = 2 * h0 * h0 - 1
+        u1 = 2 * h0 * h1
+        u2 = 2 * h1 * h1
+        u3 = 2 * h1 * u2 * gcf / 3
+
+        if orbits != 0
+            u3 = u3 + 2 * π * orbits / (beta * sqrt(beta))
+        end
+
+        r1 = r0*u0 + n0*u1 + μ*u2
+        dt = r0*u1 + n0*u2 + μ*u3
+
+        slope = 4*r1 / (1 + beta*u*u)
+        terror = tdesired - dt
+
+        if abs(terror) < threshold
+            break
+        end
+
+        if (i > 1) && (u == uold)
+            break
+        end
+
+        if (i > 1) && (dt == dtold)
+            break
+        end
+
+        uold  = u
+        dtold = dt
+        ustep = terror / slope
+
+        if ustep > 0
+            umin = u
+
+            u = u + ustep
+
+            if u > umax
+                u = (umin + umax) / 2.0
+            end
+        else
+            umax = u
+
+            u = u + ustep
+
+            if u < umin
+                u = (umin + umax) / 2.0
+            end
+        end
+
+        if i == imax
+            throw("max iterations exceeded")
+        end
+    end
+
+    usaved = u
+
+    f = 1.0 - (μ / r0) * u2
+    gg = 1.0 - (μ / r1) * u2
+    g = r0 * u1 + n0 * u2
+    ff = -μ * u1 / (r0 * r1)
+
+    rf = f  .* ri .+ g  .* vi
+    vf = ff .* ri .+ gg .* vi
+
+    return rf, vf
+end
