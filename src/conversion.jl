@@ -1,3 +1,5 @@
+using LinearAlgebra
+
 """
     keplerian_from_state_vectors(μ::Number,
                                   r::AbstractVector{<:Number},
