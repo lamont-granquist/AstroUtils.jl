@@ -1,7 +1,5 @@
 using LinearAlgebra
 
-include("angles.jl")
-
 """
     time_to_next_radius(mu::AbstractFloat, 
                         r::AbstractVector{<:AbstractFloat}, 
@@ -21,11 +19,11 @@ Calculates the time to the next radial distance from state vectors.
   value for a hyperbolic orbit which has no future encounter.
 """
 function time_to_next_radius(
-    mu::Number,
-    r::AbstractVector{<:Number},
-    v::AbstractVector{<:Number},
-    radius::Number
-)::AbstractFloat
+        mu::Number,
+        r::AbstractVector{<:Number},
+        v::AbstractVector{<:Number},
+        radius::Number
+    )::AbstractFloat
     @assert isfinite(mu) && mu > 0
     @assert length(r) == 3 && norm(r) > 0
     @assert length(v) == 3
@@ -163,7 +161,11 @@ Computes the true anomaly from keplerian elements and desired radius.
 # Returns
 - True anomaly in radians
 """
-function true_anomaly_from_radius(sma::Number, ecc::Number, radius::Number)::AbstractFloat
+function true_anomaly_from_radius(
+        sma::Number,
+        ecc::Number,
+        radius::Number
+    )::AbstractFloat
     @assert isfinite(sma)
     @assert isfinite(ecc) && ecc > 0
     @assert isfinite(radius) && radius > 0

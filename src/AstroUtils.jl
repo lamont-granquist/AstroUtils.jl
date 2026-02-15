@@ -3,11 +3,11 @@ module AstroUtils
 using ExportAll
 
 include("angles.jl")
+include("utils.jl")
+include("misc.jl")
 include("conversion.jl")
 include("hyperb.jl")
-include("misc.jl")
 include("twobody.jl")
-include("utils.jl")
 
 @exportAll()
 
