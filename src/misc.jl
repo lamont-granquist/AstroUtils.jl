@@ -181,6 +181,6 @@ function periapsis_from_state_vectors(mu, r, v)
 end
 
 function period_from_state_vectors(μ, r, v)
-    sma = μ / (2 * μ / norm(r) - dot(v,v))
+    sma = sma_from_state_vectors(μ, r, v)
     return 2*π*sqrt(sma^3/μ)
 end

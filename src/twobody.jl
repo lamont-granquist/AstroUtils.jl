@@ -4,7 +4,7 @@ function twobody(μ, tau, ri, vi)
     tolerance = 1e-12
 
     u = 0
-    imax = 20
+    imax = 50
     umax = typemax(Float64)
     umin = typemin(Float64)
     uold = umax
@@ -106,10 +106,6 @@ function twobody(μ, tau, ri, vi)
             if u < umin
                 u = (umin + umax) / 2.0
             end
-        end
-
-        if i == imax
-            throw("max iterations exceeded")
         end
     end
 
